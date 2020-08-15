@@ -1,1 +1,1 @@
-Currently NO LICENSE, because this is an experimental project.
+Currently NO LICENSE (all rights reserved), because this is an experimental project.
