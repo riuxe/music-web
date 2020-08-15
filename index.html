@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>MIDI Console</title>
+
+    <style type="text/css">
+      table {
+	border-collapse: collapse;
+	border: solid thin;
+      }
+
+      td, th {
+	border: solid thin;
+	text-align: center;
+	vertical-align: middle;
+	padding: 0;
+	margin: 0;
+      }
+
+      .center {
+	margin: auto;
+      }
+
+      .text-center {
+	text-align: center;
+      }
+
+      .chord_button {
+	padding: 0;
+	width: 80px;
+	height: 45px;
+	text-align: center;
+	border-style: none;
+      }
+
+      #chord_tone_div {
+	height: 2em;
+	text-align: center;
+	vertical-align: middle;
+	font-size: x-large;
+      }
+
+      #keyboard_svg {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div>
+      MIDI Output: <select name="midi_output" id="midi_output"></select>
+    </div>
+
+    <div id="key_scale_div">
+      <div id="key_div">Key: </div>
+
+      <div id="scale_div">Scale: </div>
+
+      <div>Key-Scale Change: <input type="checkbox" id="key_scale_checkbox">Linked</div>
+    </div>
+
+    <div id="chord_select_div">Visible table rows: </div>
+
+    <div>Button colors: <span id="legend-tonic">Tonic</span>, <span id="legend-sub-dominant">Subdominant</span>, <span id="legend-dominant">Dominant</span></div>
+    <div>Press '1','2','3',...,'9','0' to invert.</div>
+
+    <div id="keyboard_div"><svg id="keyboard_svg"></svg></div>
+
+    <div id="chord_tone_div">Chord: <span id="chord_tone_span"></span></div>
+
+    <table id="chord_table" class="center"></table>
+
+    <div class="text-center">Copyright (C) 2020 riuxe.github.io. All Rights Reserved.</div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+
+    <script src="js/tone.js"></script>
+    <script src="js/chord.js"></script>
+    <script src="js/keyboard.js"></script>
+    <script src="js/midi.js"></script>
+    <script src="js/console.js"></script>
+  </body>
+</html>
