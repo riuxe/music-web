@@ -34,16 +34,12 @@ function tone_7to12(note7, half) {
   return tone_info7[note7][1] + half;
 }
 
-function tone_name7(tone7) {
-  return tone_info7[tone7][0];
-}
-
 function tone_midi(tone12, octave) {
   return tone12_c3 + (octave - 3) * 12 + tone12;
 }
 
-function tone_name12(tone7, half) {
-  let name = tone_name7(tone7);
+function tone_name7(tone7, half = 0) {
+  let name = tone_info7[tone7][0];
   let h;
 
   if (half > 0) {
@@ -57,6 +53,23 @@ function tone_name12(tone7, half) {
   }
 
   return name + h;
+}
+
+function tone_name12(tone12, sign = null) {
+  let info = tone_info12[tone12];
+  if (info.length == 1)
+    return tone_name7(info[0]);
+  else {
+    let name0 = tone_name7(info[0], +1);
+    let name1 = tone_name7(info[1], -1);
+
+    if (sign == +1)
+      return name0;
+    else if (sign == -1)
+      return name1;
+    else
+      return name0 + ',' + name1;
+  }
 }
 
 const scale_info = [
@@ -88,33 +101,22 @@ function key_button_create(selector, id_prefix, id_label_prefix, change_fn) {
 
   let button_array = [];
 
-  for (let i = 0; i < tone_info12.length; i++) {
-    let id = id_prefix + i;
-    let label_id = id_label_prefix + i;
+  for (let t12 = 0; t12 < tone_info12.length; t12++) {
+    let id = id_prefix + t12;
+    let label_id = id_label_prefix + t12;
 
     let button = $('<input>', {
       type: 'radio',
       id: id,
       name: 'key',
       change: function () {
-	change_fn(i);
+	change_fn(t12);
       }
     }).appendTo(div);
 
     button_array.push(button);
 
-    let info = tone_info12[i];
-    let name;
-
-    if (info.length == 1) {
-      name = tone_name12(info[0], 0);
-    }
-    else {
-      let name0 = tone_name12(info[0], +1);
-      let name1 = tone_name12(info[1], -1);
-
-      name = name0 + ',' + name1
-    }
+    let name = tone_name12(t12);
 
     let label = $('<label>', {
       id: label_id,

@@ -83,8 +83,10 @@ function key_scale_change(key12, scale) {
 
   for (let chd = 0; chd < chord_info.length; chd++) {
     for (let t12 = 0; t12 < tone_info12.length; t12++) {
-      if (state.button_all[t12][chd] != null)
-	state.button_all[t12][chd].css('background-color', '#e0e0e0');
+      if (state.button_all[t12][chd] != null) {
+	let color = (tone_info12[t12].length > 1? '#d0d0d0' : '#f0f0f0');
+	state.button_all[t12][chd].css('background-color', color);
+      }
     }
   }
 
@@ -194,22 +196,14 @@ function button_change(inversion) {
 
 function table_create() {
   let table = $('#chord_table');
-  let tr = $('<tr>').appendTo(table);
+  let tr = $('<tr>', {
+    id: 'chord_header'
+  }).appendTo(table);
 
   $('<th>Chord</th>').appendTo(tr);
 
   for (let t12 = 0; t12 < tone_info12.length; t12++) {
-    let info = tone_info12[t12];
-    let name;
-    if (info.length == 2) {
-      let name0 = tone_name12(info[0], +1);
-      let name1 = tone_name12(info[1], -1);
-      name = name0 + ',' + name1;
-    }
-    else {
-      name = tone_name12(info[0], 0);
-    }
-
+    let name = tone_name12(t12);
     $('<th>' + name + '</th>').appendTo(tr);
   }
 
@@ -232,14 +226,48 @@ function table_create() {
   }
 }
 
+function table_row_change(row, elm) {
+  for (let t12 = 0; t12 < tone_info12.length; t12++) {
+    let column = row.find(elm).eq(1 + t12);
+    if (!$('#tone_select_' + t12).prop('checked')) {
+      column.hide();
+    }
+  }
+}
+
 function table_change() {
+  /*
+   * Show all cells.
+   */
+  let header = $('#chord_header');
+  for (let t12 = 0; t12 < tone_info12.length; t12++) {
+    header.find("th").eq(1 + t12).show();
+  }
+
   for (let chd = 0; chd < chord_info.length; chd++) {
-    if ($('#chord_select_' + chd).prop('checked')) {
-      $('#chord_row_' + chd).css('display', 'table-row');
+    let row = $('#chord_row_' + chd);
+    row.show();
+
+    for (let t12 = 0; t12 < tone_info12.length; t12++) {
+      row.find("td").eq(1 + t12).show();
     }
-    else {
-      $('#chord_row_' + chd).css('display', 'none');
+  }
+
+  /*
+   * Hide selected rows, columns.
+   */
+  for (let chd = 0; chd < chord_info.length; chd++) {
+    let row = $('#chord_row_' + chd);
+    if (!$('#chord_select_' + chd).prop('checked')) {
+      row.hide();
     }
+  }
+
+  table_row_change(header, "th");
+
+  for (let chd = 0; chd < chord_info.length; chd++) {
+    let row = $('#chord_row_' + chd);
+    table_row_change(row, "td");
   }
 }
 
@@ -299,7 +327,7 @@ $(document).ready(function () {
     function (s) { key_scale_change(state.key, s) }
   );
 
-  let div = $('#chord_select_div');
+  let chord_div = $('#chord_select_div');
   for (let chd = 0; chd < chord_info.length; chd++) {
     let id = "chord_select_" + chd;
     let box = $('<input>', {
@@ -308,12 +336,30 @@ $(document).ready(function () {
       name: chord_suffix(chd),
       checked: "checked",
       change: function () { table_change() },
-    }).appendTo(div);
+    }).appendTo(chord_div);
 
     let label = $('<label>', {
       text: 'X' + chord_suffix(chd) + ' ',
       for: id,
-    }).appendTo(div);
+    }).appendTo(chord_div);
+  }
+
+  let tone_div = $('#tone_select_div');
+  for (let t12 = 0; t12 < tone_info12.length; t12++) {
+    let name = tone_name12(t12);
+    let id = "tone_select_" + t12;
+    let box = $('<input>', {
+      type: "checkbox",
+      id: id,
+      name: name,
+      checked: "checked",
+      change: function () { table_change() },
+    }).appendTo(tone_div);
+
+    let label = $('<label>', {
+      text: name + ' ',
+      for: id,
+    }).appendTo(tone_div);
   }
 
   table_create();

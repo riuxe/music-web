@@ -111,7 +111,7 @@ function chord_tone_name(root7, half, chd) {
 
 function chord_name(root7, half, chd, inversion) {
   let suffix = chord_suffix(chd);
-  let name = tone_name12(root7, half);
+  let name = tone_name7(root7, half);
   let array = chord_tone_name(root7, half, chd);
   let r = inversion % array.length;
 
